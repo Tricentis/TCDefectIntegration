@@ -41,29 +41,24 @@ namespace TCDefectIntegration {
         public override Dictionary<string, string> GetInfosForDefects(List<string> defectIds) {
             Dictionary<string, string> retVal = new Dictionary<string, string>();
             foreach (string crqId in defectIds) {
-                retVal[crqId] = "Name for '"+ crqId + "'";
+                retVal[crqId] = "Name for '" + crqId + "'";
             }
             return retVal;
         }
 
         public override string GetDefectDetails(List<string> crqIds) {
-            //The value of the Type property must be "Defect" or "FeatureRequest"
-            var details = new IssueDetails {
-                new IssueDetail {
-                    ID = "TOS-1234",
-                    Name = "Crash when submitting order",
-                    State = "Open",
+
+            var details = new IssueDetails();
+            Random random = new Random(Environment.TickCount);
+            foreach (string id in crqIds) {
+                details.Add(new IssueDetail {
+                    ID = id,
+                    Name = "",
+                    State = SimulationResults[random.Next(0, 5)],
                     Type = "Defect",
-                    Severity = 12
-                },
-                new IssueDetail {
-                    ID = "TOS-4321",
-                    Name = "Order description must be improved",
-                    State = "Open",
-                    Type = "FeatureRequest",
-                    Severity = 5
-                }
-            };
+                    Severity = random.Next(0, 5)
+                });
+            }
 
             var stringBuilder = new StringBuilder();
             using (var xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings { NewLineOnAttributes = true, Indent = true })) {
